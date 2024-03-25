@@ -9,7 +9,6 @@ def relu(Z):
     A = np.maximum(0,Z)
     return A
 
-
 def relu_backward(dA, Z):
     dZ = np.array(dA, copy=True)
     dZ[Z<=0] = 0
@@ -23,19 +22,7 @@ def sigmoid_backward(dA, Z):
     return dZ
 
 def predict(X, params):
-    A = X
-    L = len(params) // 2   
-    for l in range(1, L):
-        A_prev = A 
-        W=params['W' + str(l)]
-        b=params['b' + str(l)]
-        Z = W.dot(A_prev) + b
-        A= relu(Z)
-    A_prev = A 
-    W=params['W' + str(L)]
-    b=params['b' + str(L)]
-    Z = W.dot(A_prev) + b
-    AL= sigmoid(Z)
+    AL, caches=forward_prop_L(X,params)
     return (AL>0.5)
 
 def load_data():
@@ -92,8 +79,6 @@ def forward_prop_L(X_train,params):
     caches.append(cache)
     return AL, caches
 
-
-
 def  compute_cost(A,Y):
     m = Y.shape[1]
     cost = (1./m) * (-np.dot(Y,np.log(A).T) - np.dot(1-Y, np.log(1-A).T))
@@ -112,12 +97,12 @@ def back_prop_one(dA,cache,activation):
     dA_prev = np.dot(W.T,dZ)
     return dA_prev, dW, db 
 
-def back_prop_L(AL,Y_train,caches):
+def back_prop_L(A,Y,caches):
     grads = {}
     L = len(caches) 
-    m = AL.shape[1]
-    Y = Y_train.reshape(AL.shape)
-    dAL = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL)) 
+    m = A.shape[1]
+    Y = Y.reshape(A.shape)
+    dAL = - (np.divide(Y, A) - np.divide(1 - Y, 1 - A)) 
     current_cache = caches[L-1]
     dA_prev, dW, db=back_prop_one(dAL,current_cache,"sigmoid")
     grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = dA_prev, dW, db
