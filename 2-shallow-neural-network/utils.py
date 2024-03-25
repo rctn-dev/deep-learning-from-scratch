@@ -47,27 +47,27 @@ def compute_cost (A,Y):
     cost=-np.sum(loss)/m
     return cost
 
-def forward_prop(X_train,params):
+def forward_prop(X,params):
     W1=params["W1"]
     b1=params["b1"]
     W2=params["W2"]
     b2=params["b2"]
     #forward propagation
-    Z1=np.dot(W1,X_train)+b1
+    Z1=np.dot(W1,X)+b1
     A1=np.tanh(Z1)
     Z2=np.dot(W2,A1)+b2
     AL=sigmoid(Z2)
     return AL,A1
-def back_prop(AL,cache,X_train,Y_train,params):
+def back_prop(AL,cache,X,Y,params):
     grads={}
     A1=cache
     W2=params["W2"]
-    m=Y_train.shape[1]
-    dZ2=AL-Y_train 
+    m=Y.shape[1]
+    dZ2=AL-Y
     dZ1=np.dot(W2.T,dZ2)*(1-np.power(A1,2))
     grads["dW2"]=np.dot(dZ2,A1.T)/m
     grads["db2"]=np.sum(dZ2,axis=1,keepdims=True)/m
-    grads["dW1"]=np.dot(dZ1,X_train.T)/m
+    grads["dW1"]=np.dot(dZ1,X.T)/m
     grads["db1"]=np.sum(dZ1,axis=1,keepdims=True)/m
     return grads
 
