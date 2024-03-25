@@ -70,3 +70,10 @@ def back_prop(AL,cache,X_train,Y_train,params):
     grads["dW1"]=np.dot(dZ1,X_train.T)/m
     grads["db1"]=np.sum(dZ1,axis=1,keepdims=True)/m
     return grads
+
+def update_parameters(params,grads,learning_rate):
+    params["W2"]-=learning_rate*grads["dW2"]
+    params["b2"]-=learning_rate*grads["db2"]
+    params["W1"]-=learning_rate*grads["dW1"]
+    params["b1"]-=learning_rate*grads["db1"]
+    return params
