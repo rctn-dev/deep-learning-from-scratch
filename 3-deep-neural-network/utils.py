@@ -42,7 +42,9 @@ def load_data():
     X_test=test_set_x.reshape(test_set_x.shape[0],-1).T/255
     Y_train=train_set_y.reshape(1,train_set_y.shape[0])
     Y_test=test_set_y.reshape(1,test_set_y.shape[0])
+    
     return X_train,Y_train, X_test,Y_test
+
 def initialize_parameters(layers_dims):
     np.random.seed(1)
     params = {}

@@ -9,6 +9,7 @@ def sigmoid(z):
     return s
 
 if __name__=='__main__':
+    
     # load_dataset
     f_train=h5py.File('./catvnoncat/train_catvnoncat.h5', 'r')
     f_test=h5py.File('./catvnoncat/test_catvnoncat.h5', 'r')
@@ -41,13 +42,15 @@ if __name__=='__main__':
     costs=[]
     
     # train and model fit: multiple forward-backward propagations
-    for iter in range(0,max_iterations):
-
+    for iter in range(max_iterations):
         #forward propagation
         Z=np.dot(W.T,X_train)+b
         A=sigmoid(Z)
         dZ=A-Y_train 
-        costs.append(-np.sum(Y_train*np.log(A)+(1-Y_train)*np.log(1-A))/m_train)
+        cost=-np.sum(Y_train*np.log(A)+(1-Y_train)*np.log(1-A))/m_train
+        costs.append(cost)
+        if iter%100==0:
+            print("cost at iter "+str(iter)+" : "+str(cost))
 
         #backward propagation
         dW=np.dot(X_train,dZ.T)/m_train
