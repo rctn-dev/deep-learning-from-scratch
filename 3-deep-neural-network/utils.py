@@ -73,6 +73,27 @@ def forward_prop_one(A_prev,W,b,activation):
         A= sigmoid(Z)
     return A,Z
 
+def forward_prop_L(X_train,params):
+    caches = []
+    A = X_train
+    L = len(params) // 2   
+    for l in range(1, L):
+        A_prev = A 
+        W=params['W' + str(l)]
+        b=params['b' + str(l)]
+        A,Z=forward_prop_one(A_prev,W,b,activation="relu")
+        cache = (A_prev,Z,W,b)
+        caches.append(cache)
+    A_prev = A 
+    W=params['W' + str(L)]
+    b=params['b' + str(L)]
+    AL,Z=forward_prop_one(A_prev,W,b,activation="sigmoid")
+    cache = (A_prev,Z,W,b)
+    caches.append(cache)
+    return AL, caches
+
+
+
 def  compute_cost(A,Y):
     m = Y.shape[1]
     cost = (1./m) * (-np.dot(Y,np.log(A).T) - np.dot(1-Y, np.log(1-A).T))
@@ -90,6 +111,21 @@ def back_prop_one(dA,cache,activation):
     db = 1./m * np.sum(dZ, axis = 1, keepdims = True)
     dA_prev = np.dot(W.T,dZ)
     return dA_prev, dW, db 
+
+def back_prop_L(AL,Y_train,caches):
+    grads = {}
+    L = len(caches) 
+    m = AL.shape[1]
+    Y = Y_train.reshape(AL.shape)
+    dAL = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL)) 
+    current_cache = caches[L-1]
+    dA_prev, dW, db=back_prop_one(dAL,current_cache,"sigmoid")
+    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = dA_prev, dW, db
+    for l in reversed(range(L-1)):
+        current_cache = caches[l]
+        dA_prev, dW, db=back_prop_one(dA_prev,current_cache,"relu")
+        grads["dA" + str(l+1)], grads["dW" + str(l+1)], grads["db" + str(l+1)] =  dA_prev, dW, db 
+    return grads
 
 def update_parameters(params,grads,learning_rate):
         L = len(params) // 2 
