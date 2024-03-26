@@ -1,7 +1,6 @@
 import numpy as np
 import h5py
 
-
 def sigmoid(z):
 
     s=1/(1+np.exp(-z))
@@ -38,7 +37,6 @@ def initialize_parameters(n_x,n_h,n_y):
     params["b1"]=np.zeros((n_h,1))
     params["W2"]=np.random.randn(n_y,n_h) * 0.001
     params["b2"]=np.zeros((n_y,1))
-
     return params
 
 def compute_cost (A,Y):
